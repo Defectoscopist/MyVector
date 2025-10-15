@@ -1,9 +1,2 @@
 ﻿  Arrays.cpp
-D:\UnrealProject\Cpp\MyVector\Arrays.cpp(62,24): error C2760: синтаксическая ошибка: непредвиденный элемент ";". Ожидается "выражение"
-      D:\UnrealProject\Cpp\MyVector\Arrays.cpp(62,24):
-      контекст создания экземпляра шаблона (сначала самый старый)
-          D:\UnrealProject\Cpp\MyVector\Arrays.cpp(93,2):
-          выполняется компиляция ссылки на экземпляр класс шаблон функции "MyVector<T>"
-  
-D:\UnrealProject\Cpp\MyVector\Arrays.cpp(76,24): error C2760: синтаксическая ошибка: непредвиденный элемент ";". Ожидается "выражение"
-D:\UnrealProject\Cpp\MyVector\Arrays.cpp(90,24): error C2760: синтаксическая ошибка: непредвиденный элемент ";". Ожидается "выражение"
+  Arrays.vcxproj -> D:\UnrealProject\Cpp\MyVector\x64\Debug\Arrays.exe
