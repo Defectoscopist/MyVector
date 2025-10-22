@@ -7,33 +7,15 @@
 
 using namespace std;
 
-
-class Person
-{
-public:
-	Person() : name(""), age(0) {};
-	Person(const string& n, int a) : name(n), age(a) {};
-
-	~Person() {};
-
-	__forceinline string get_name() const { return name; }
-	__forceinline int get_age() const { return age; }
-
-private:
-
-	string name;
-	int age;
-};
-
-template<typename...Args>
-Person makePerson(Args&&...args)
-{
-	return Person(forward<Args>(args)...);
-}
-
 template <typename T>
 class MyVector
 {
+
+	using iterator = T*;
+	using const_iterator = const T*;
+	using reverse_iterator_my = reverse_iterator<iterator>;
+	using const_reberse_iterator = reverse_iterator<const_iterator>;
+
 private:
 	T* data_;           // pointer to array
 	size_t size_;       // current size
@@ -71,19 +53,24 @@ public:
 	~MyVector() { delete[] data_; cout << "vector deleted\n"; }
 
 	// Return size of array
-	__forceinline size_t size() const { return size_; }
+	__forceinline size_t size() const noexcept { return size_; }
 
 	// Return capacity of array
-	__forceinline size_t capacity() const { return capacity_; }
+	__forceinline size_t capacity() const noexcept { return capacity_; }
 
 	// Return if array is empty
-	__forceinline bool empty() const { return size_ == 0; }
+	__forceinline bool empty() const noexcept { return size_ == 0; }
 
 	// Check is operator[] in range of array
-	__forceinline bool is_valid_index(size_t index) const { return index < size_; }
+	__forceinline bool is_valid_index(size_t index) const noexcept { return index < size_; }
 
 	// Return data of array
-	__forceinline T* data() const { return data_; }
+	__forceinline T* data() const noexcept { return data_; }
+
+	void clear() noexcept
+	{
+		size_ = 0;
+	}
 
 	// Get element of array by index
 	T& operator[](size_t index)
@@ -255,9 +242,82 @@ public:
 		new (&data_[size_]) T(forward<Args>(args)...);
 		size_++;
 	}
+
+	void shrink_to_fit()
+	{
+		if (size_ < capacity_)
+		{
+			T* new_data = new T[size_];
+
+			for (size_t i = 0; i < size_; i++)
+			{
+				new_data[i] = data_[i];
+			}
+
+			delete[] data_;
+
+			data_ = new_data;
+			capacity_ = size_;
+		}
+	}
+
+	void swap_my(MyVector& other) noexcept
+	{
+		swap(data_, other.data_);
+		swap(size_, other.size_);
+		swap(capacity_, other.capacity_);
+	}
+
+public:
+
+	/*		ITERATORS		*/
+	iterator begin() noexcept { return front(); }
+	iterator end() noexcept { return back(); }
+
+	const iterator begin() const noexcept { return front(); }
+	const iterator end() const noexcept { return back(); }
+
+	iterator cbegin() const noexcept { return front(); }
+	iterator cend() const noexcept { return back(); }
+
+	reverse_iterator_my rbegin() noexcept { return reverse_iterator(end()); }
+	reverse_iterator_my rend() noexcept { return reverse_iterator(begin()); }
+
+	const reverse_iterator_my rbegin() const noexcept { return const_reverse_iterator(end()); }
+	const reverse_iterator_my rend() const noexcept { return const_reverse_iterator(begin()); }
+
+	reverse_iterator_my crbegin() const noexcept { return const_reverse_iterator(end()); }
+	reverse_iterator_my crend() const noexcept { return const_reverse_iterator(begin()); }
+
 };
 
-	/*
+/*
+class Person
+{
+public:
+	Person() : name(""), age(0) {};
+	Person(const string& n, int a) : name(n), age(a) {};
+
+	~Person() {};
+
+	__forceinline string get_name() const { return name; }
+	__forceinline int get_age() const { return age; }
+
+private:
+
+	string name;
+	int age;
+};
+
+
+template<typename...Args>
+Person makePerson(Args&&...args)
+{
+	return Person(forward<Args>(args)...);
+}
+*/
+
+/*
 	// some lambdas
 	template<typename Func>
 	void for_each_element(Func func)
@@ -347,7 +407,7 @@ int main()
 	cout << "After resize: size_ = " << reserveVector.size() << '\n';
 	reserveVector.resize(5);
 	cout << "After resize: size_ = " << reserveVector.size() << '\n';
-
+	/*
 	void* memory = operator new(sizeof(Person) * 2);
 	Person* p1 = new (memory) Person("Dima", 26);
 	cout << p1->get_name() << '\n';
@@ -359,5 +419,6 @@ int main()
 
 	Person p3 = makePerson("Peter", 33);
 	cout << p3.get_name() << " is " << p3.get_age() << " years old";
+	*/
 
 }
